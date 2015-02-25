@@ -4,5 +4,5 @@
 
 function tick() {
     physicsUpdate();
-    graphicsUpdate();
+    render();
 }

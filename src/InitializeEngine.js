@@ -10,4 +10,4 @@ window.onload = function() {
     initGraphics(canvas);
 
     setInterval(tick, 1000 / 30);
-}
+};

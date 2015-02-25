@@ -5,12 +5,49 @@
     <title>Up Down</title>
 
     <script type="text/javascript" src="toji-gl-matrix-983967a/dist/gl-matrix-min.js"></script>
+
     <script type="text/javascript" src="src/InitializeEngine.js"></script>
+
     <script type="text/javascript" src="src/engine/GameLoop.js"></script>
+
     <script type="text/javascript" src="src/graphics/MainGraphics.js"></script>
+    <script type="text/javascript" src="src/graphics/ShaderProgram.js"></script>
+    <script type="text/javascript" src="src/graphics/Texture.js"></script>
+
     <script type="text/javascript" src="src/physics/MainPhysics.js"></script>
 
+    <script type="text/javascript" src="src/utils/MatrixUtils.js"></script>
+
+
     <link rel="stylesheet" type="text/css" href="style/style.css">
+
+    <!--TODO I hate that this is in the html file-->
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 vertexPosition;
+        attribute vec2 textureCoord;
+
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+
+        varying vec2 vTextureCoord;
+
+        void main(void) {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
+            vTextureCoord = textureCoord;
+        }
+    </script>
+    <!--TODO mediump float isnt necessary I dont think-->
+    <script id="shader-fs" type="x-shader/x-fragment">
+        precision mediump float;
+
+        varying vec2 vTextureCoord;
+
+        uniform sampler2D sampler;
+
+        void main(void) {
+            gl_FragColor = texture2D(sampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        }
+    </script>
 </head>
 <body>
     <canvas id="render-space" width="100" height="100" style="background: black;"></canvas>
