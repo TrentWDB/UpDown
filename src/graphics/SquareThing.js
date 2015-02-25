@@ -37,9 +37,9 @@ var SquareThing = function() {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareThing.vertexIndexBuffer.id);
     var vertexIndices = [
         0, 1, 2,
-        1, 2, 3
+        0, 2, 3
     ];
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Float32Array(vertexIndices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
     squareThing.vertexIndexBuffer.itemSize = 1;
     squareThing.vertexIndexBuffer.numItems = 6;
 

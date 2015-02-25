@@ -5,7 +5,9 @@
 var modelViewMatrixStack = [];
 
 function pushModelViewMatrix() {
-    modelViewMatrixStack.push(modelViewMatrix);
+    var modelViewMatrixClone = mat4.clone(modelViewMatrix);
+
+    modelViewMatrixStack.push(modelViewMatrixClone);
 }
 
 function popModelViewMatrix() {
@@ -19,11 +21,13 @@ function popModelViewMatrix() {
 
 var projectionMatrixStack = [];
 
-function pushModelViewMatrix() {
-    projectionMatrixStack.push(projectionMatrix);
+function pushProjectionMatrix() {
+    var projectionMatrixClone = mat4.clone(projectionMatrix);
+
+    projectionMatrixStack.push(projectionMatrixClone);
 }
 
-function popModelViewMatrix() {
+function popProjectionMatrix() {
     if (projectionMatrixStack.length == 0) {
         throw "Cannot pop matrix. Matrix stack is empty.";
     }

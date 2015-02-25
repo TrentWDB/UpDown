@@ -30,32 +30,34 @@ function initGraphics(canvas) {
 }
 
 function loadTextures() {
-    texture1 = Texture('textures/texture1.png');
+    texture1 = Texture('textures/texture1.png', false);
 }
 
 function loadShaderUniforms() {
-    gl.uniformMatrix4fv(shaderProgram.modelViewMatrixUniform, false, modelViewMatrix);
-    gl.uniformMatrix4fv(shaderProgram.projectionMatrixUniform, false, projectionMatrix);
+    gl.uniformMatrix4fv(shaderProgram.modelViewMatrixUniform, false, new Float32Array(modelViewMatrix));
+    gl.uniformMatrix4fv(shaderProgram.projectionMatrixUniform, false, new Float32Array(projectionMatrix));
 }
 
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    shaderProgram.use();
+
     renderSquareThing(squareThing1)
 }
 
 function renderSquareThing(squareThing) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, squareThing.vertexPositionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, squareThing.vertexPositionBuffer.id);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareThing.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, squareThing.vextureCoordBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, squareThing.textureCoordBuffer.id);
     gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, squareThing.textureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture1.id);
     gl.uniform1i(shaderProgram.samplerUniform, 0);
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareThing.vertexIndexBuffer);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareThing.vertexIndexBuffer.id);
 
     pushModelViewMatrix();
     mat4.translate(modelViewMatrix, modelViewMatrix, squareThing.pos);

@@ -26,6 +26,11 @@ var ShaderProgram = function(vertShader, fragShader) {
 
     shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram.id, 'sampler');
 
+
+    shaderProgram.use = function() {
+        gl.useProgram(this.id);//TODO what is this in this context
+    };
+
     return shaderProgram;
 };
 

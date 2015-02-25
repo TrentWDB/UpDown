@@ -2,6 +2,8 @@
  * Created by Trent on 2/24/2015.
  */
 
-function physicsUpdate() {
+var GRAVITY = -1;
+
+function physicsUpdate(deltaTime) {
 
 }
