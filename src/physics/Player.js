@@ -3,8 +3,7 @@
  */
 
 var Player = function() {
-    var player = {};
-    player.squareThing = SquareThing();
-    player.pos = vec3.create();
-    player.vel = vec3.create();
+    this.squareThing = new SquareThing();
+    this.pos = vec3.create();
+    this.vel = vec3.create();
 };

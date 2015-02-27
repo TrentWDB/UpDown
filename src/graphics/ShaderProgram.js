@@ -3,35 +3,32 @@
  */
 
 var ShaderProgram = function(vertShader, fragShader) {
-    var shaderProgram = {};
-    shaderProgram.id = gl.createProgram();
+    this.id = gl.createProgram();
     var vertexShader = getShader(gl, 'shader-vs');
     var fragmentShader = getShader(gl, 'shader-fs');
-    gl.attachShader(shaderProgram.id, vertexShader);
-    gl.attachShader(shaderProgram.id, fragmentShader);
-    gl.linkProgram(shaderProgram.id);
+    gl.attachShader(this.id, vertexShader);
+    gl.attachShader(this.id, fragmentShader);
+    gl.linkProgram(this.id);
 
-    if (!gl.getProgramParameter(shaderProgram.id, gl.LINK_STATUS)) {
+    if (!gl.getProgramParameter(this.id, gl.LINK_STATUS)) {
         alert('Could not link shaders');
     }
 
-    shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram.id, 'vertexPosition');
-    gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+    this.vertexPositionAttribute = gl.getAttribLocation(this.id, 'vertexPosition');
+    gl.enableVertexAttribArray(this.vertexPositionAttribute);
 
-    shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram.id, 'textureCoord');
-    gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+    this.textureCoordAttribute = gl.getAttribLocation(this.id, 'textureCoord');
+    gl.enableVertexAttribArray(this.textureCoordAttribute);
 
-    shaderProgram.modelViewMatrixUniform = gl.getUniformLocation(shaderProgram.id, 'modelViewMatrix');
-    shaderProgram.projectionMatrixUniform = gl.getUniformLocation(shaderProgram.id, 'projectionMatrix');
+    this.modelViewMatrixUniform = gl.getUniformLocation(this.id, 'modelViewMatrix');
+    this.projectionMatrixUniform = gl.getUniformLocation(this.id, 'projectionMatrix');
 
-    shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram.id, 'sampler');
+    this.samplerUniform = gl.getUniformLocation(this.id, 'sampler');
 
 
-    shaderProgram.use = function() {
+    this.use = function() {
         gl.useProgram(this.id);//TODO what is this in this context
     };
-
-    return shaderProgram;
 };
 
 function getShader(gl, shaderId) {
