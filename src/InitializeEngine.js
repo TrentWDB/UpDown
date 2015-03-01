@@ -3,10 +3,13 @@
  */
 
 var Game = {};
+Game.PlayerManager = new PlayerManager();
 Game.GameLoop = new GameLoop();
 Game.GameTime = new GameTime();
 
+Game.Batch = new Batch();
 Game.Graphics = new Graphics();
+Game.Level = new Level();
 
 Game.Physics = new Physics();
 

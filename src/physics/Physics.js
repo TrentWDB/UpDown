@@ -5,7 +5,7 @@
 var Physics = function() {
     this.GRAVITY = 1;
 
-    this.physicsUpdate = function(deltaTime) {
+    this.update = function(deltaTime) {
 
-    }
+    };
 };

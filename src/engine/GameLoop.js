@@ -4,7 +4,7 @@
 
 var GameLoop = function() {
     this.tick = function() {
-        Game.Physics.physicsUpdate(Game.GameTime.getDeltaTime());
+        Game.Physics.update(Game.GameTime.getDeltaTime());
 
         Game.Graphics.render();
     };
