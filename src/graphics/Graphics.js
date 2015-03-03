@@ -11,12 +11,13 @@ var Graphics = function() {
     this.playerTexture1;
     this.playerTexture2;
     this.wallTexture;
+    this.floorTexture;
 
-    this.initGraphics = function(canvas) {
+    this.initGraphics = function() {
         var canvasOptions = {
             antialias: true
         };
-        gl = canvas.getContext('webgl', canvasOptions) || canvas.getContext('experimental-webgl', canvasOptions);
+        gl = Game.canvas.getContext('webgl', canvasOptions) || canvas.getContext('experimental-webgl', canvasOptions);
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -24,7 +25,7 @@ var Graphics = function() {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         projectionMatrix = mat4.create();
-        mat4.ortho(projectionMatrix, 0, canvas.width, canvas.height, 0, 1, -100);
+        mat4.ortho(projectionMatrix, 0, Game.canvas.width, Game.canvas.height, 0, 1, -100);
         modelViewMatrix = mat4.create();
 
         this.currentShaderProgram = new ShaderProgram('shader-vs', 'shader-fs');
@@ -39,11 +40,12 @@ var Graphics = function() {
         this.playerTexture1 = new Texture('textures/blob1.png', false);
         this.playerTexture2 = new Texture('textures/blob2.png', false);
         this.wallTexture = new Texture('textures/repeating-wall.png', false);
+        this.floorTexture = new Texture('textures/repeating-floor.png', false);
     };
 
     this.loadShaderUniforms = function() {
-        gl.uniformMatrix4fv(this.currentShaderProgram.modelViewMatrixUniform, false, new Float32Array(modelViewMatrix));
-        gl.uniformMatrix4fv(this.currentShaderProgram.projectionMatrixUniform, false, new Float32Array(projectionMatrix));
+        gl.uniformMatrix4fv(this.currentShaderProgram.modelViewMatrixUniform, false, new Float32Array(mat4.clone(modelViewMatrix)));
+        gl.uniformMatrix4fv(this.currentShaderProgram.projectionMatrixUniform, false, new Float32Array(mat4.clone(projectionMatrix)));
     };
 
     this.render = function() {
@@ -51,8 +53,15 @@ var Graphics = function() {
 
         this.currentShaderProgram.use();
 
+        mat4.identity(modelViewMatrix);
+
+        //pushModelViewMatrix();
+        mat4.translate(modelViewMatrix, modelViewMatrix, vec3.fromValues(0, Game.canvas.height / 2, 0));
+
         Game.Level.render();
 
         Game.PlayerManager.render();
+
+        //popModelViewMatrix();
     };
 };

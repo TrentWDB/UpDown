@@ -3,9 +3,11 @@
  */
 
 var Game = {};
-Game.PlayerManager = new PlayerManager();
+
+Game.GameInput = new GameInput();
 Game.GameLoop = new GameLoop();
 Game.GameTime = new GameTime();
+Game.PlayerManager = new PlayerManager();
 
 Game.Batch = new Batch();
 Game.Graphics = new Graphics();
@@ -14,11 +16,11 @@ Game.Level = new Level();
 Game.Physics = new Physics();
 
 window.onload = function() {
-    var canvas = document.getElementById('render-space');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    Game.canvas = document.getElementById('render-space');
+    Game.canvas.width = document.body.clientWidth;
+    Game.canvas.height = document.body.clientHeight;
 
-    Game.Graphics.initGraphics(canvas);
+    Game.Graphics.initGraphics();
 
     setInterval(Game.GameLoop.tick, 1000 / 60);
 };

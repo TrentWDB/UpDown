@@ -13,9 +13,9 @@ var GameTime = function() {
 
     this.update = function() {
         this.lastTime = this.currentTime;
-        this.currentTime = new Date().getUTCMilliseconds();
+        this.currentTime = new Date().getTime();
 
-        if (this.fpsLastUpdateTime - this.currentTime < 1000) {
+        if (this.currentTime - this.fpsLastUpdateTime >= 1000) {
             this.fps = this.fpsFramesSinceLastUpdate;
             this.fpsLastUpdateTime = this.currentTime;
             this.fpsFramesSinceLastUpdate = 0;
@@ -32,7 +32,7 @@ var GameTime = function() {
     };
 
     this.init = function() {
-        this.lastTime = new Date().getUTCMilliseconds();
+        this.lastTime = new Date().getTime();
         this.fpsLastUpdateTime = this.lastTime;
         this.fpsFramesSinceLastUpdate = 0;
         this.fps = 0;

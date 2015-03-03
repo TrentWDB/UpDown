@@ -7,5 +7,8 @@ var GameLoop = function() {
         Game.Physics.update(Game.GameTime.getDeltaTime());
 
         Game.Graphics.render();
+
+        Game.GameInput.clearDeltas();
+        Game.GameTime.update();
     };
 };

@@ -5,6 +5,7 @@
 var TexturedSquare = function(pos, dimensions, textureCoords, texture) {
     this.pos = pos;
     this.texture = texture;
+    this.dimensions = dimensions;
 
     this.vertexPositionBuffer = {};
     this.vertexPositionBuffer.id = gl.createBuffer();
