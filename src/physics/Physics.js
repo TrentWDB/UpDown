@@ -10,6 +10,7 @@ var Physics = function() {
     this.FRICTION = 0.005;
     this.RESTITUTION = 0.2;
     this.BOUNCE_SPEED = 1.6;
+    this.MAX_STEP_HEIGHT = 8;
     this.TOLERANCE = 0.000001;
 
     this.isOnGround = false;
@@ -135,116 +136,83 @@ var Physics = function() {
                 this.isOnGround = false;
             }
             if (insideAmountX > 0 || insideAmountY > 0) {
-                /*
-                var xDist;
-                var yDist;
-                var widthTolerance = 2;
-                //moving to the right
-                if (tryNewPos[0] > oldPos[0]) {
-                    //can get to the min vertex
-                    if (colMinVertex[0] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance) > oldPos[0]) {
-                        xDist = colMinVertex[0] - oldPos[0] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance);
-                    } else {
-                        xDist = colMaxVertex[0] - oldPos[0] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance);
-                    }
-                //moving to the left
-                } else {
-                    if (colMaxVertex[0] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance) < oldPos[0]) {
-                        xDist = oldPos[0] - colMaxVertex[0] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance);
-                    } else {
-                        xDist = oldPos[0] - colMinVertex[0] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance);
-                    }
-                }
-                //moving down
-                if (tryNewPos[1] > oldPos[1]) {
-                    //can get to the min vertex
-                    if (colMinVertex[1] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance) > oldPos[1]) {
-                        yDist = colMinVertex[1] - oldPos[1] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance);
-                    } else {
-                        yDist = colMaxVertex[1] - oldPos[1] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance);
-                    }
-                //moving up
-                } else {
-                    if (colMaxVertex[1] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance) < oldPos[1]) {
-                        yDist = oldPos[1] - colMaxVertex[1] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance);
-                    } else {
-                        yDist = oldPos[1] - colMinVertex[1] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance);
-                    }
-                }
-
-
-                var hitHorizontal = false;
-                var hitVertical = false;
-                var changeX = tryNewPos[0] - oldPos[0];
-                var changeY = tryNewPos[1] - oldPos[1];
-                if (Math.abs(changeX) < this.TOLERANCE) {
-                    hitHorizontal = true
-                } else if (Math.abs(changeY) < this.TOLERANCE) {
-                    hitVertical = true;
-                    console.log(1);
-                } else {
-                    var xDistToYDistMult = changeY / changeX;
-                    var xCorrespondingY = xDist * xDistToYDistMult;
-                    var xDistYPos = oldPos[1] + xCorrespondingY * Math.abs(changeX) / changeX;
-
-                    //if it doesnt hit the boundaries of the vertical side
-                    if (xDistYPos > colMaxVertex[1] + Game.PlayerManager.PLAYER_WIDTH / 2 || xDistYPos < colMinVertex[1] - Game.PlayerManager.PLAYER_WIDTH / 2) {
-                        hitHorizontal = true;
-                    } else {
-                        var yDistToXDistMult = changeX / changeY;
-                        var yCorrespondingX = yDist * yDistToXDistMult;
-                        var yDistXPos = oldPos[0] + yCorrespondingX * Math.abs(changeY) / changeY;
-
-                        //if it doesnt hit the boundaries of the horizontal side
-                        if (yDistXPos > colMaxVertex[0] + Game.PlayerManager.PLAYER_WIDTH / 2 || yDistXPos < colMinVertex[0] - Game.PlayerManager.PLAYER_WIDTH / 2) {
-                            hitVertical = true;
-                            console.log(2);
-                        } else {
-                            var yDistDistance = Math.sqrt(xDist * xDist + xCorrespondingY * xCorrespondingY);
-                            var xDistDistance = Math.sqrt(yDist * yDist + yCorrespondingX * yCorrespondingX);
-                            console.log(xDistDistance + ' - ' + yDistDistance);
-
-                            if (xDistDistance > yDistDistance) {
-                                hitVertical = true;
-                                console.log(3);
-                            } else {
-                                hitHorizontal = true;
-                                console.log('test');
-                            }
-                        }
-                    }
-                }
-                */
-
-                var widthTolerance = 0;
                 var lineTop = [
-                    [colMinVertex[0] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance), colMinVertex[1] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance)],
-                    [colMaxVertex[0] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance), colMinVertex[1] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance)]
+                    [colMinVertex[0] - Game.PlayerManager.PLAYER_WIDTH / 2, colMinVertex[1] - Game.PlayerManager.PLAYER_WIDTH / 2],
+                    [colMaxVertex[0] + Game.PlayerManager.PLAYER_WIDTH / 2, colMinVertex[1] - Game.PlayerManager.PLAYER_WIDTH / 2]
                 ];
                 var lineRight = [
-                    [colMaxVertex[0] + Game.PlayerManager.PLAYER_WIDTH / 2, colMinVertex[1] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance)],
-                    [colMaxVertex[0] + Game.PlayerManager.PLAYER_WIDTH / 2, colMaxVertex[1] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance)]
+                    [colMaxVertex[0] + Game.PlayerManager.PLAYER_WIDTH / 2, colMinVertex[1] - Game.PlayerManager.PLAYER_WIDTH / 2],
+                    [colMaxVertex[0] + Game.PlayerManager.PLAYER_WIDTH / 2, colMaxVertex[1] + Game.PlayerManager.PLAYER_WIDTH / 2]
                 ];
                 var lineBottom = [
-                    [colMinVertex[0] - Game.PlayerManager.PLAYER_WIDTH / 2, colMaxVertex[1] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance)],
-                    [colMaxVertex[0] + Game.PlayerManager.PLAYER_WIDTH / 2, colMaxVertex[1] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance)]
+                    [colMinVertex[0] - Game.PlayerManager.PLAYER_WIDTH / 2, colMaxVertex[1] + Game.PlayerManager.PLAYER_WIDTH / 2],
+                    [colMaxVertex[0] + Game.PlayerManager.PLAYER_WIDTH / 2, colMaxVertex[1] + Game.PlayerManager.PLAYER_WIDTH / 2]
                 ];
                 var lineLeft = [
-                    [colMinVertex[0] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance), colMinVertex[1] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance)],
-                    [colMinVertex[0] - (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance), colMaxVertex[1] + (Game.PlayerManager.PLAYER_WIDTH / 2 - widthTolerance)]
-                ];
-
-                var guyVelLine = [
-                    [oldPos[0], oldPos[1]],
-                    [tryNewPos[0], tryNewPos[1]]
+                    [colMinVertex[0] - Game.PlayerManager.PLAYER_WIDTH / 2, colMinVertex[1] - Game.PlayerManager.PLAYER_WIDTH / 2],
+                    [colMinVertex[0] - Game.PlayerManager.PLAYER_WIDTH / 2, colMaxVertex[1] + Game.PlayerManager.PLAYER_WIDTH / 2]
                 ];
 
                 var hitHorizontal = false;
                 var hitVertical = false;
-                if (this.lineIntersection(lineTop, guyVelLine) || this.lineIntersection(lineBottom, guyVelLine)) {
+                if (oldPos[0] > lineTop[0][0] && oldPos[0] < lineTop[1][0]) {
                     hitHorizontal = true;
-                } else if (this.lineIntersection(lineRight, guyVelLine) || this.lineIntersection(lineLeft, guyVelLine)) {
+                } else if (oldPos[1] > lineRight[0][1] && oldPos[1] < lineRight[1][1]) {
                     hitVertical = true;
+                } else {
+                    var guyVelLineX = tryNewPos[0] - oldPos[0];
+                    var guyVelLineY = tryNewPos[1] - oldPos[1];
+                    var guyVelLineLength = Math.sqrt(guyVelLineX * guyVelLineX + guyVelLineY * guyVelLineY);
+                    var widthTolerance = 50;
+                    var guyVelLine = [
+                        [oldPos[0] - widthTolerance * guyVelLineX / guyVelLineLength, oldPos[1] - widthTolerance * guyVelLineY / guyVelLineLength],
+                        [tryNewPos[0] + widthTolerance * guyVelLineX / guyVelLineLength, tryNewPos[1] + widthTolerance * guyVelLineY / guyVelLineLength]
+                    ];
+
+                    var distanceToTopIntersectionSquared = Number.MAX_VALUE;
+                    var distanceToRightIntersectionSquared = Number.MAX_VALUE;
+                    var distanceToBottomIntersectionSquared = Number.MAX_VALUE;
+                    var distanceToLeftIntersectionSquared = Number.MAX_VALUE;
+
+                    var lineTopIntersection = this.pointOfIntersection(guyVelLine, lineTop);
+                    var lineRightIntersection = this.pointOfIntersection(guyVelLine, lineRight);
+                    var lineBottomIntersection = this.pointOfIntersection(guyVelLine, lineBottom);
+                    var lineLeftIntersection = this.pointOfIntersection(guyVelLine, lineLeft);
+                    if (lineTopIntersection != Number.NaN && this.lineIntersection(guyVelLine, lineTop) != 0) {
+                        var distX = lineTopIntersection[0] - oldPos[0];
+                        var distY = lineTopIntersection[1] - oldPos[1];
+                        distanceToTopIntersectionSquared = Math.sqrt(distX * distX + distY * distY);
+                    }
+                    if (lineRightIntersection != Number.NaN && this.lineIntersection(guyVelLine, lineRight) != 0) {
+                        var distX = lineRightIntersection[0] - oldPos[0];
+                        var distY = lineRightIntersection[1] - oldPos[1];
+                        distanceToRightIntersectionSquared = Math.sqrt(distX * distX + distY * distY);
+                    }
+                    if (lineBottomIntersection != Number.NaN && this.lineIntersection(guyVelLine, lineBottom) != 0) {
+                        var distX = lineBottomIntersection[0] - oldPos[0];
+                        var distY = lineBottomIntersection[1] - oldPos[1];
+                        distanceToBottomIntersectionSquared = Math.sqrt(distX * distX + distY * distY);
+
+                    }
+                    if (lineLeftIntersection != Number.NaN && this.lineIntersection(guyVelLine, lineLeft) != 0) {
+                        var distX = lineLeftIntersection[0] - oldPos[0];
+                        var distY = lineLeftIntersection[1] - oldPos[1];
+                        distanceToLeftIntersectionSquared = Math.sqrt(distX * distX + distY * distY);
+                    }
+
+                    if (distanceToTopIntersectionSquared < distanceToRightIntersectionSquared
+                        && distanceToTopIntersectionSquared < distanceToLeftIntersectionSquared) {
+                        hitHorizontal = true;
+                    } else if (distanceToBottomIntersectionSquared < distanceToRightIntersectionSquared
+                        && distanceToBottomIntersectionSquared < distanceToLeftIntersectionSquared) {
+                        hitHorizontal = true;
+                    } else if (distanceToRightIntersectionSquared < distanceToTopIntersectionSquared
+                        && distanceToRightIntersectionSquared < distanceToBottomIntersectionSquared) {
+                        hitVertical = true;
+                    } else if (distanceToLeftIntersectionSquared < distanceToTopIntersectionSquared
+                        && distanceToLeftIntersectionSquared < distanceToBottomIntersectionSquared) {
+                        hitVertical = true;
+                    }
                 }
 
                 var totalCurrentDistance = Math.sqrt(addDistX * addDistX + addDistY * addDistY);
@@ -256,17 +224,26 @@ var Physics = function() {
                     var xDir = Math.abs(addDistX) / addDistX;
                     var backupAmountX = xDir * (insideAmountX + 0.1);
                     var xToYMult = Math.sin(guyVelAngle) / Math.cos(guyVelAngle);
+                    var backupAmountY = backupAmountX * xToYMult;
 
                     var newDesiredXPos = tryNewPos[0] - backupAmountX;
-                    var newDesiredYPos = tryNewPos[1] - backupAmountX * xToYMult;
+                    var newDesiredYPos = tryNewPos[1] - backupAmountY;
 
                     var distanceTraveledX = newDesiredXPos - oldPos[0];
                     var distanceTraveledY = newDesiredYPos - oldPos[1];
                     var distanceTraveled = Math.sqrt(distanceTraveledX * distanceTraveledX + distanceTraveledY * distanceTraveledY);
-                    remainingDeltaTime *= (1 - distanceTraveled / totalCurrentDistance);
+                    distanceTraveled += Math.abs(tryNewPos[1] - newDesiredYPos);
+                    remainingDeltaTime *= Math.max((1 - distanceTraveled / totalCurrentDistance), 0);
 
-                    oldPos[0] = newDesiredXPos;
-                    oldPos[1] = newDesiredYPos;
+                    var addDistYSignum = Math.abs(addDistY) / addDistY;
+                    if (insideAmountY < this.MAX_STEP_HEIGHT && (addDistYSignum == 0 || addDistYSignum == -this.calculateWorldSide(oldPos, oldVel))) {
+                        tryNewPos[1] -= (insideAmountY + 0.1) * addDistYSignum;
+                        oldPos[0] = tryNewPos[0];
+                    } else {
+                        oldPos[0] = newDesiredXPos;
+                        tryNewPos[0] = newDesiredXPos;
+                    }
+                    oldPos[1] = tryNewPos[1];
 
                     if (Math.abs(curVelX) >= this.BOUNCE_SPEED) {
                         var changeInXVelAfterHit = (newVel[0] - oldVel[0]) * (remainingDeltaTime / deltaTime);
@@ -278,9 +255,8 @@ var Physics = function() {
                         newVel[0] = 0;
                     }
                 } else {
-
                     var yDir = Math.abs(addDistY) / addDistY;
-                    var backupAmountY = yDir * (insideAmountY + this.TOLERANCE);
+                    var backupAmountY = yDir * (insideAmountY + 0.1);
                     var yToXMult = Math.cos(guyVelAngle) / Math.sin(guyVelAngle);
 
                     var newDesiredXPos = tryNewPos[0] - backupAmountY * yToXMult;
@@ -289,15 +265,16 @@ var Physics = function() {
                     var distanceTraveledX = newDesiredXPos - oldPos[0];
                     var distanceTraveledY = newDesiredYPos - oldPos[1];
                     var distanceTraveled = Math.sqrt(distanceTraveledX * distanceTraveledX + distanceTraveledY * distanceTraveledY);
-                    remainingDeltaTime *= (1 - distanceTraveled / totalCurrentDistance);
+                    distanceTraveled += Math.abs(tryNewPos[0] - newDesiredXPos);
+                    remainingDeltaTime *= Math.max((1 - distanceTraveled / totalCurrentDistance), 0);
 
-                    oldPos[0] = newDesiredXPos;
+                    oldPos[0] = tryNewPos[0];
                     oldPos[1] = newDesiredYPos;
+                    tryNewPos[1] = newDesiredYPos;
 
                     var speed = Math.sqrt(curVelX * curVelX + curVelY * curVelY);
                     if (Math.abs(curVelY) >= this.BOUNCE_SPEED) {
                         var changeInYVelAfterHit = (newVel[1] - oldVel[1]) * (remainingDeltaTime / deltaTime);
-                        //TODO physics is slightly wrong if he hits a person and then bounces and the same tick ends up on the opposite side of the zero line
                         var desiredYVel = -curVelY * this.RESTITUTION;
                         oldVel[1] = desiredYVel;
                         newVel[1] = desiredYVel + changeInYVelAfterHit;
@@ -328,7 +305,7 @@ var Physics = function() {
             velAddX += this.ACCEL * deltaTime;
         }
 
-        if (Game.GameInput.keysDown[Game.GameInput.KEY_W] && this.isOnGround) {
+        if (Game.GameInput.keysDown[Game.GameInput.KEY_W]/* && this.isOnGround*/) {
             velAddY += oldWorldSide * this.JUMP_ACCEL;
             this.isOnGround = false;
         }
@@ -413,5 +390,26 @@ var Physics = function() {
         }
 
         return 0; // No collision
+    }
+
+    this.pointOfIntersection = function(line1, line2) {
+        var x1 = line1[0][0];
+        var y1 = line1[0][1];
+        var x2 = line1[1][0];
+        var y2 = line1[1][1];
+        var x3 = line2[0][0];
+        var y3 = line2[0][1];
+        var x4 = line2[1][0];
+        var y4 = line2[1][1];
+
+        var d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+        if (d == 0) {
+            return Number.NaN;
+        }
+
+        var xi = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/d;
+        var yi = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/d;
+
+        return [xi, yi];
     }
 };
